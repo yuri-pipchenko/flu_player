@@ -1,4 +1,3 @@
-import parseUrl from 'parseurl';
 import {log_error, log_warning, log_info, log_debug} from './logger';
 
 /*
@@ -122,9 +121,8 @@ class FluPlayer {
     };
 
     _connect = () => {
-	const URL = this._makeWSURL();
-        log_info('opening web socket, URL:', URL);
-        this.ws = new WebSocket(URL);
+        log_info('opening web socket, URL:', this.url);
+        this.ws = new WebSocket(this.url);
         this.ws.binaryType = 'arraybuffer';
         this.ws.onopen = () => {
             log_info("web socket is open");
@@ -345,40 +343,6 @@ class FluPlayer {
             this.media.currentTime = end_time - 0.5;
         }
     }
-
-    _makeWSURL = () => {
-	// TODO: then use @param time it prevent to wrong data from ws(trackID view[47] for example is 100)
-	const time = this.curTime;
-
-	if (!time && !this.videoTrack && !this.audioTrack) {
-            return this.url;
-	}
-
-	const parsedUrl = parseUrl({url: this.url});
-	let othersParams = '';
-
-	if (parsedUrl.query) {
-            const currentParamsKeysValues = parsedUrl.query.split('&').map(keyValue => keyValue.split('='));
-
-            othersParams = currentParamsKeysValues
-		.filter(p => p[0] !== 'from' && p[0] !== 'tracks')
-		.map(kv => kv.join('='))
-		.join('&');
-	}
-
-	const cleanUrl = `${parsedUrl.protocol}//${parsedUrl.host}${parsedUrl.pathname}?`;
-	const tracksExists = !!this.videoTrack || !!this.audioTrack;
-
-	const ampFrom = tracksExists && !!time && this.live ? '&' : '';
-	const fromQuery = this.live ? '' : `from=${Math.floor(time - 4)}`;
-
-	const resultUrl =
-          `${cleanUrl}${tracksExists ? `tracks=${this.videoTrack}${this.audioTrack}` : ''}` +
-          `${ampFrom}${fromQuery}` +
-          `${(tracksExists || (!!time && !this.live)) && !!othersParams ? '&' : ''}${othersParams}`;
-	return resultUrl;
-    }
-
 }
 
 const mimeType = content => {

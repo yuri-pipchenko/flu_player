@@ -1,6 +1,6 @@
 {
   "name": "flu_player",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MSE Websocket player for Flussonic Media Server",
   "main": "src/index.js",
   "scripts": {
