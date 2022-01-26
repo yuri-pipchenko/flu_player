@@ -1,0 +1,25 @@
+{
+  "name": "flu_player",
+  "version": "1.0.0",
+  "description": "MSE Websocket player for Flussonic Media Server",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuri-pipchenko/flu_player.git"
+  },
+  "keywords": [
+    "flussonic",
+    "mse",
+    "websocket",
+    "ws"
+  ],
+  "author": "Yuri Pipchenko (https://www.npmjs.com/~pipchenko)",
+  "license": "GNU GPLv3",
+  "bugs": {
+    "url": "https://github.com/yuri-pipchenko/flu_player/issues"
+  },
+  "homepage": "https://github.com/yuri-pipchenko/flu_player#readme"
+}
