@@ -1,9 +1,12 @@
 {
   "name": "flu_player",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "MSE Websocket player for Flussonic Media Server",
-  "main": "src/index.js",
+  "main": "dist/component.min.js",
   "scripts": {
+    "concat:js": "mkdir -p dist/ && concat -o dist/component.js src/logger.js src/index.js",
+    "uglify": "uglifyjs -o dist/component.min.js dist/component.js",
+    "build": "npm run concat:js && npm run uglify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,5 +24,9 @@
   "bugs": {
     "url": "https://github.com/yuri-pipchenko/flu_player/issues"
   },
-  "homepage": "https://github.com/yuri-pipchenko/flu_player#readme"
+  "homepage": "https://github.com/yuri-pipchenko/flu_player#readme",
+  "devDependencies": {
+    "concat": "^1.0.3",
+    "uglify-js": "^3.15.0"
+  }
 }

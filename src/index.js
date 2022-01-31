@@ -9,15 +9,6 @@
  - time() - returns current playback time
 */
 
-const log_error = (...args)   => log('ERROR', ...args);
-const log_warning = (...args) => log('WARNING', ...args);
-const log_info = (...args)    => log('INFO', ...args);
-const log_debug = (...args)   => log('DEBUG', ...args);
-
-const log = (level, ...args) => {
-  console.log('[FluPlayer] ' + level + ':', ...args);
-}
-
 const mimeType = content => {
     switch (content) {
     case 'video':
@@ -59,14 +50,15 @@ export class FluPlayer {
         this.loading = false; // buffers loading state, true - data downloading is in progress.
         this.live = true;     // true if realtime video (with minimum delay) is displaying
         this.waitingData = true;
-        this.onProgress = props.onProgress || (() => {});
-        this.onPlay     = props.onPlay || (() => {});
-        this.onPause    = props.onPause || (() => {});
+        this.onProgress   = props.onProgress || (() => {});
+        this.onPlay       = props.onPlay || (() => {});
+        this.onPause      = props.onPause || (() => {});
+        this.onRateChange = props.onRateChange || (() => {});
         this.media.addEventListener('timeupdate', event => {
-            props.onProgress(this.time());
+            this.onProgress(this.time());
         });
         this.media.addEventListener('ratechange', event => {
-            this.live = event.target.playbackRate === 1.0;
+            this.onRateChange(event.target.playbackRate);
         });
         this.media.addEventListener('pause', this._onMediaPause);
         this.media.addEventListener('play', this._onMediaPlay);
@@ -132,7 +124,7 @@ export class FluPlayer {
     }
 
     _onMediaPlay = () => {
-        log_info('play event from media component, url:', this.url, "time:", this.curTime, "video:", this.videoTrack, "audio:", this.audioTack);
+        log_info('play event from media component, url:', this.url, "time:", this.curTime);
         if (!this.paused) {
             return;
         }

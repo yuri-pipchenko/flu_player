@@ -6,5 +6,3 @@ const log_debug = (...args)   => log('DEBUG', ...args);
 const log = (level, ...args) => {
   console.log('[Flu Player] ' + level + ':', ...args);
 }
-
-export {log_error, log_warning, log_info, log_debug};
