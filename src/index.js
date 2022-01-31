@@ -1,5 +1,3 @@
-import {log_error, log_warning, log_info, log_debug} from './logger';
-
 /*
  API:
  - play()
@@ -11,7 +9,44 @@ import {log_error, log_warning, log_info, log_debug} from './logger';
  - time() - returns current playback time
 */
 
-class FluPlayer {
+const log_error = (...args)   => log('ERROR', ...args);
+const log_warning = (...args) => log('WARNING', ...args);
+const log_info = (...args)    => log('INFO', ...args);
+const log_debug = (...args)   => log('DEBUG', ...args);
+
+const log = (level, ...args) => {
+  console.log('[FluPlayer] ' + level + ':', ...args);
+}
+
+const mimeType = content => {
+    switch (content) {
+    case 'video':
+        return 'video/mp4; codecs="avc1.4d401f"';
+    case 'audio':
+        return 'audio/mp4; codecs="mp4a.40.2"';
+    default:
+        return 'unknown';
+    }
+}
+
+const rawDataToSegment = data => {
+    const view = new Uint8Array(data);
+    const trackId = view[47];
+    return {id: trackId, data: view};
+}
+
+const getRealUtc = view => {
+    const pts1 = (view[92] << 24) | (view[93] << 16) | (view[94] << 8) | view[95];
+    const pts2 = (view[96] << 24) | (view[97] << 16) | (view[98] << 8) | view[99];
+    const realUtc = pts1 + pts2 / 1000000;
+    return realUtc;
+}
+
+const base64ToArrayBuffer = base64 => {
+    return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+}
+
+export class FluPlayer {
     constructor(props) {
         this.media = props.media;
         this.url = props.url;
@@ -344,33 +379,3 @@ class FluPlayer {
         }
     }
 }
-
-const mimeType = content => {
-    switch (content) {
-    case 'video':
-        return 'video/mp4; codecs="avc1.4d401f"';
-    case 'audio':
-        return 'audio/mp4; codecs="mp4a.40.2"';
-    default:
-        return 'unknown';
-    }
-}
-
-const rawDataToSegment = data => {
-    const view = new Uint8Array(data);
-    const trackId = view[47];
-    return {id: trackId, data: view};
-}
-
-const getRealUtc = view => {
-    const pts1 = (view[92] << 24) | (view[93] << 16) | (view[94] << 8) | view[95];
-    const pts2 = (view[96] << 24) | (view[97] << 16) | (view[98] << 8) | view[99];
-    const realUtc = pts1 + pts2 / 1000000;
-    return realUtc;
-}
-
-const base64ToArrayBuffer = base64 => {
-    return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-}
-
-export default FluPlayer;
